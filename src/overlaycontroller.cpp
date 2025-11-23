@@ -24,7 +24,8 @@
 #include "utils/Matrix.h"
 #include "keyboard_input/input_sender.h"
 #include "settings/settings.h"
-
+void BoundrySyncStart(vr::IVRSystem* vr,advsettings::MoveCenterTabController* moveCenterTabController);
+void BoundrySyncStop();
 // application namespace
 namespace advsettings
 {
@@ -162,6 +163,7 @@ OverlayController::OverlayController( bool desktopMode,
     m_settingsTabController.initStage1();
     m_videoTabController.initStage1();
     m_rotationTabController.initStage1();
+    BoundrySyncStart(vr::VRSystem(),&m_moveCenterTabController);
 
     // init action handles
 
@@ -1214,7 +1216,7 @@ void OverlayController::mainEventLoop()
             LOG( INFO ) << "Received quit request.";
             vr::VRSystem()->AcknowledgeQuit_Exiting(); // Let us buy some
                                                        // time just in case
-
+            BoundrySyncStop();
             exitApp();
             // Won't fallthrough, but also exitApp() wont, but QT won't
             // acknowledge

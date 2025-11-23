@@ -1191,20 +1191,24 @@ void MoveCenterTabController::clampVelocity( double* velocity )
     }
 }
 
-void MoveCenterTabController::updateChaperoneResetData()
+void MoveCenterTabController::updateChaperoneResetData(bool fromCalibration)
 {
-    auto cstate = vr::VRChaperone()->GetCalibrationState();
-    if ( cstate > 199 )
+    if(fromCalibration)
     {
-        LOG( WARNING ) << "Chaperone Calibration State is error: " << cstate
-                       << " While Trying to Update Reset Data";
+        auto cstate = vr::VRChaperone()->GetCalibrationState();
+        if ( cstate > 199 )
+        {
+            LOG( WARNING ) << "Chaperone Calibration State is error: " << cstate
+                        << " While Trying to Update Reset Data";
+        }
+        else
+        {
+            vr::VRChaperoneSetup()->CommitWorkingCopy(
+                vr::EChaperoneConfigFile_Live );
+            vr::VRChaperoneSetup()->RevertWorkingCopy();
+        }
     }
-    else
-    {
-        vr::VRChaperoneSetup()->CommitWorkingCopy(
-            vr::EChaperoneConfigFile_Live );
-        vr::VRChaperoneSetup()->RevertWorkingCopy();
-    }
+
     unsigned currentQuadCount = 0;
     vr::VRChaperoneSetup()->GetWorkingCollisionBoundsInfo( nullptr,
                                                            &currentQuadCount );

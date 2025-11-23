@@ -273,7 +273,7 @@ public:
     void setBoundsBasisHeight( float newHeight );
     float getBoundsBasisMaxY();
 
-    void updateChaperoneResetData();
+    void updateChaperoneResetData(bool fromCalibration = true);
 
     void reloadOffsetProfiles();
     void saveOffsetProfiles();
