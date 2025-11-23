@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: autoTurnGroupBox
     Layout.fillWidth: true
+    topPadding: (autoTurnGroupBox.label ? autoTurnGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Auto-Turn (for discrete redirected walking)"
-        bottomPadding: -12
     }
     background: Rectangle {
         color: "transparent"

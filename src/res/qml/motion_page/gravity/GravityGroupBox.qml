@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: gravityGroupBox
     Layout.fillWidth: true
+    topPadding: (gravityGroupBox.label ? gravityGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Gravity Settings"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

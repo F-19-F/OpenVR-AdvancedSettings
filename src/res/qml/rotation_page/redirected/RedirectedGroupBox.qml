@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: redirectedGroupBox
     Layout.fillWidth: true
+    topPadding: (redirectedGroupBox.label ? redirectedGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Vestibular Motion (for continuous redirected walking)"
-        bottomPadding: -12
     }
     background: Rectangle {
         color: "transparent"

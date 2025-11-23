@@ -7,12 +7,12 @@ import "../../common"
 GroupBox {
     id: steamVRBindGroupBox
     Layout.fillWidth: true
+    topPadding: (steamVRBindGroupBox.label ? steamVRBindGroupBox.label.implicitHeight : 0) + 10
 
     label:
         MyText {
         leftPadding: 10
         text: "Binds:"
-        bottomPadding: -10
         }
 
 

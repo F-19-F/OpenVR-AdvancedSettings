@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: spaceTurnGroupBox
     Layout.fillWidth: true
+    topPadding: (spaceTurnGroupBox.label ? spaceTurnGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Space Turn (for manual redirected walking)"
-        bottomPadding: -12
     }
     background: Rectangle {
         color: "transparent"

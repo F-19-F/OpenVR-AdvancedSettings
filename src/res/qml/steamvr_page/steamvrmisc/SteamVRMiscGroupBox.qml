@@ -7,11 +7,10 @@ import "../../common"
 GroupBox {
     id: steamVRMiscGroupBox
     Layout.fillWidth: true
-
+    topPadding: (steamVRMiscGroupBox.label ? steamVRMiscGroupBox.label.implicitHeight : 0) + 10
     label: MyText {
         leftPadding: 10
         text: "Misc:"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

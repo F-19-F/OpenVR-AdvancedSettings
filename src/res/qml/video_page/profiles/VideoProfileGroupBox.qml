@@ -19,11 +19,11 @@ GroupBox {
     VideoMessageDialog{
         id:videoMessageDialog
     }
+    topPadding: (videoProfileGroupBox.label ? videoProfileGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Video Profiles:"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

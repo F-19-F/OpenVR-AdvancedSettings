@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: brightnessGroupBox
     Layout.fillWidth: true
+    topPadding: (brightnessGroupBox.label ? brightnessGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Brightness"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

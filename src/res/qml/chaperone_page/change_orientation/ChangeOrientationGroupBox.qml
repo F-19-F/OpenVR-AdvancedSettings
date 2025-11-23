@@ -8,11 +8,11 @@ import "." // QTBUG-34418, singletons require explicit import to load qmldir fil
 GroupBox {
     id: changeOrientationGroupBox
     Layout.fillWidth: true
+    topPadding: (changeOrientationGroupBox.label ? changeOrientationGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Rotate Orientation (permanent)"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

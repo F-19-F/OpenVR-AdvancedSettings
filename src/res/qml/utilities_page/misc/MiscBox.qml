@@ -7,12 +7,12 @@ import "../../common"
 GroupBox {
     id: utilMiscGroupBox
     Layout.fillWidth: true
+    topPadding: (utilMiscGroupBox.label ? utilMiscGroupBox.label.implicitHeight : 0) + 10
 
     label:
         MyText {
         leftPadding: 10
         text: "Misc:"
-        bottomPadding: -10
         }
 
 

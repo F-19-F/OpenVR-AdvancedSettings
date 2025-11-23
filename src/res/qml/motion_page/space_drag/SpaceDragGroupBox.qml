@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: spaceDragGroupBox
     Layout.fillWidth: true
+    topPadding: (spaceDragGroupBox.label ? spaceDragGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Space Drag"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

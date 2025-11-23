@@ -159,11 +159,11 @@ MyStackViewPage {
             Layout.fillWidth: true
             id: offsetsGroupBox
             visible: true
+            topPadding: (offsetsGroupBox.label ? offsetsGroupBox.label.implicitHeight : 0) + 10
 
             label: MyText {
                 leftPadding: 10
                 text: "Move Space"
-                bottomPadding: -10
             }
             background: Rectangle {
                 color: "transparent"
@@ -357,10 +357,10 @@ MyStackViewPage {
             id: rotationGroupBox
             visible: true
 
+            topPadding: (rotationGroupBox.label ? rotationGroupBox.label.implicitHeight : 0) + 10
             label: MyText {
                 leftPadding: 10
                 text: "Rotate Space"
-                bottomPadding: -10
             }
             background: Rectangle {
                 color: "transparent"

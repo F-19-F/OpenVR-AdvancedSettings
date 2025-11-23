@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: alarmGroupBox
     Layout.fillWidth: true
-    
+    topPadding: (alarmGroupBox.label ? alarmGroupBox.label.implicitHeight : 0) + 10
+
     label: MyText {
         leftPadding: 10
         text: "Alarm Clock"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: keyboardGroupBox
     Layout.fillWidth: true
-    
+    topPadding: (keyboardGroupBox.label ? keyboardGroupBox.label.implicitHeight : 0) + 10
+
     label: MyText {
         leftPadding: 10
         text: "Keyboard Utilities"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

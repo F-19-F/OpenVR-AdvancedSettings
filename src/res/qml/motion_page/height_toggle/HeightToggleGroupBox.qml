@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: heightToggleGroupBox
     Layout.fillWidth: true
+    topPadding: (heightToggleGroupBox.label ? heightToggleGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Height Toggle / Gravity Floor Offset"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

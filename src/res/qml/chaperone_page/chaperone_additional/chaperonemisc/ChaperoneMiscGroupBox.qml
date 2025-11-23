@@ -7,11 +7,11 @@ import "." // QTBUG-34418, singletons require explicit import to load qmldir fil
 GroupBox {
     id: chaperoneMiscGroupBox
     Layout.fillWidth: true
+    topPadding: (chaperoneMiscGroupBox.label ? chaperoneMiscGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Misc:"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

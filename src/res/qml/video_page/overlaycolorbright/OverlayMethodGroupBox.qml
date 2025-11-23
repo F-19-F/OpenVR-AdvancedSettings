@@ -7,11 +7,11 @@ import "../../common"
 GroupBox {
     id: overlayMethodGroupBox
     Layout.fillWidth: true
+    topPadding: (overlayMethodGroupBox.label ? overlayMethodGroupBox.label.implicitHeight : 0) + 10
 
     label: MyText {
         leftPadding: 10
         text: "Brightness and Color (via overlay)"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"

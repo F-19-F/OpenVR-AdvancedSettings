@@ -26,11 +26,12 @@ GroupBox {
     // Private properties
     id: sliderBox
     Layout.fillWidth: true
+    topPadding: (sliderBox.label ? sliderBox.label.implicitHeight : 0) + 10
+
     label: MyText {
         id: headerText
         leftPadding: 10
         text: "MISSING HEADER TEXT"
-        bottomPadding: -10
     }
     background: Rectangle {
         color: "transparent"
