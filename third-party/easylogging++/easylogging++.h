@@ -3007,9 +3007,11 @@ return writeIterator(template_inst.begin(), template_inst.end(), template_inst.s
   inline MessageBuilder& operator<<(const QByteArray& msg) {
     return operator << (QString(msg));
   }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   inline MessageBuilder& operator<<(const QStringRef& msg) {
     return operator<<(msg.toString());
   }
+#endif
   inline MessageBuilder& operator<<(qint64 msg) {
 #  if defined(ELPP_UNICODE)
     m_logger->stream() << QString::number(msg).toStdWString();
@@ -3035,10 +3037,12 @@ return writeIterator(template_inst.begin(), template_inst.end(), template_inst.s
     return *this;
   }
   ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QList)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QVector)
+  ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QLinkedList)
+#endif
   ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QQueue)
   ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QSet)
-  ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QLinkedList)
   ELPP_ITERATOR_CONTAINER_LOG_ONE_ARG(QStack)
   template <typename First, typename Second>
   MessageBuilder& operator<<(const QPair<First, Second>& pair_) {

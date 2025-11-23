@@ -1,4 +1,5 @@
 #include "lh_console_util.h"
+#include <QRegularExpression>
 
 namespace lh_con_util
 {
@@ -25,8 +26,8 @@ bool LHCUtil::FindAllRX()
     lhProcess->waitForFinished();
 
     QString output = QString( lhProcess->readAllStandardOutput() );
-    QStringList outputLines
-        = output.split( QRegExp( "[\r\n]" ), QString::SkipEmptyParts );
+    QStringList outputLines 
+            = output.split(QRegularExpression("[\\r\\n]"), Qt::SkipEmptyParts);
     bool RecieverStart = false;
 
     for ( auto OutputLine : outputLines )
@@ -60,7 +61,7 @@ bool LHCUtil::FindConnectedTX( QString RXSerial )
 
     QString output = QString( lhProcess->readAllStandardOutput() );
     QStringList outputLines
-        = output.split( QRegExp( "[\r\n]" ), QString::SkipEmptyParts );
+        = output.split(QRegularExpression("[\\r\\n]"), Qt::SkipEmptyParts);
     // std::vector<std::string> OutputLines
     //   = exec( ( "\"" + path_ + "\" /serial " + RXSerial + " exit" ).c_str()
     //   );

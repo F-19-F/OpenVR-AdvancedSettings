@@ -117,7 +117,7 @@ private:
     bool m_dashboardVisible = false;
 
     QPoint m_ptLastMouse;
-    Qt::MouseButtons m_lastMouseButtons = nullptr;
+    Qt::MouseButtons m_lastMouseButtons = Qt::NoButton;
 
     bool m_desktopMode;
     bool m_noSound;

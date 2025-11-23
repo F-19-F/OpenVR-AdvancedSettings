@@ -20,6 +20,8 @@ int main( int argc, char* argv[] )
     LOG( INFO ) << settings::getSettingsAndValues();
 
     QCoreApplication::setAttribute( Qt::AA_Use96Dpi );
+    
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
     QCoreApplication::setAttribute( Qt::AA_UseDesktopOpenGL );
     MyQApplication mainEventLoop( argc, argv );
     mainEventLoop.setOrganizationName(

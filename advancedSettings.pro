@@ -1,4 +1,4 @@
-QT       += core gui qml quick multimedia widgets websockets
+QT       += core gui qml quick multimedia widgets websockets core5compat
 CONFIG   += c++1z file_copies optimize_full
 
 DEFINES += ELPP_THREAD_SAFE ELPP_QT_LOGGING ELPP_NO_DEFAULT_LOG_FILE
@@ -15,7 +15,6 @@ VERSION = $$NUMERICAL_VERSION_NUMBER
 QMAKE_TARGET_DESCRIPTION = "$$cat($$PWD/build_scripts/compile_version_string.txt)"
 
 lessThan(QT_MAJOR_VERSION, 5): error("requires Qt 5.12 or higher")
-lessThan(QT_MINOR_VERSION, 12): error("requires Qt 5.12 or higher")
 
 TARGET = AdvancedSettings
 TEMPLATE = app
@@ -81,7 +80,7 @@ win32 {
 
 # Deploy resources and DLLs to exe dir on Windows
 win32 {
-    WINDEPLOYQT_LOCATION = $$dirname(QMAKE_QMAKE)/windeployqt.exe
+    WINDEPLOYQT_LOCATION = $$dirname(QMAKE_QMAKE)/windeployqt6.exe
 
     CONFIG( debug, debug|release ) {
         WINDEPLOYQT_BUILD_TARGET += "--debug"

@@ -15,6 +15,8 @@
 #include <QCursor>
 #include <QProcess>
 #include <QMessageBox>
+#include <QQuickRenderTarget>
+#include <QQuickGraphicsDevice>
 #include <iostream>
 #include <cmath>
 #include <openvr.h>
@@ -410,6 +412,10 @@ void OverlayController::SetWidget( QQuickItem* quickItem,
                                    const std::string& name,
                                    const std::string& key )
 {
+    if (!m_openGLContext.makeCurrent(&m_offscreenSurface)) {
+        LOG(ERROR) << "SetWidget: Failed to make context current!";
+        return;
+    }
     if ( !m_desktopMode )
     {
         vr::VROverlayError overlayError
@@ -473,13 +479,24 @@ void OverlayController::SetWidget( QQuickItem* quickItem,
             static_cast<int>( quickItem->height() ),
             fboFormat ) );
 
-        m_window.setRenderTarget( m_pFbo.get() );
+
+
+        // 1. 将现有的 OpenGL Context 包装为 GraphicsDevice 并告知 Window
+        m_window.setGraphicsDevice(QQuickGraphicsDevice::fromOpenGLContext(&m_openGLContext));
+
+        // 2. 初始化 RenderControl (不再需要参数)
+        m_renderControl.initialize();
+
+        // 3. 设置渲染目标
+        m_window.setRenderTarget(
+            QQuickRenderTarget::fromOpenGLTexture(m_pFbo->texture(), m_pFbo->size())
+        );
         quickItem->setParentItem( m_window.contentItem() );
+        
         m_window.setGeometry( 0,
                               0,
                               static_cast<int>( quickItem->width() ),
                               static_cast<int>( quickItem->height() ) );
-        m_renderControl.initialize( &m_openGLContext );
 
         vr::HmdVector2_t vecWindowSize
             = { static_cast<float>( quickItem->width() ),
@@ -556,13 +573,20 @@ void OverlayController::renderOverlay()
                   && !vr::VROverlay()->IsOverlayVisible(
                       m_ulOverlayThumbnailHandle ) ) )
             return;
+        if (!m_openGLContext.makeCurrent(&m_offscreenSurface)) {
+            return; 
+        }
         m_renderControl.polishItems();
+        
+        m_renderControl.beginFrame();
         m_renderControl.sync();
         m_renderControl.render();
+        m_renderControl.endFrame();
 
         GLuint unTexture = m_pFbo->texture();
         if ( unTexture != 0 )
         {
+            m_openGLContext.functions()->glFlush();
 #if defined _WIN64 || defined _LP64
             // To avoid any compiler warning because of cast to a larger
             // pointer type (warning C4312 on VC)
@@ -1117,7 +1141,7 @@ void OverlayController::mainEventLoop()
                                         m_window.mapToGlobal( ptNewMouse ),
                                         Qt::NoButton,
                                         m_lastMouseButtons,
-                                        nullptr );
+                                        Qt::NoModifier );
                 m_ptLastMouse = ptNewMouse;
                 QCoreApplication::sendEvent( &m_window, &mouseEvent );
                 OnRenderRequest();
@@ -1138,7 +1162,7 @@ void OverlayController::mainEventLoop()
                                     m_window.mapToGlobal( ptNewMouse ),
                                     button,
                                     m_lastMouseButtons,
-                                    nullptr );
+                                    Qt::NoModifier );
             QCoreApplication::sendEvent( &m_window, &mouseEvent );
         }
         break;
@@ -1156,7 +1180,7 @@ void OverlayController::mainEventLoop()
                                     m_window.mapToGlobal( ptNewMouse ),
                                     button,
                                     m_lastMouseButtons,
-                                    nullptr );
+                                    Qt::NoModifier );
             QCoreApplication::sendEvent( &m_window, &mouseEvent );
         }
         break;
@@ -1165,17 +1189,16 @@ void OverlayController::mainEventLoop()
         {
             // Wheel speed is defined as 1/8 of a degree
             QWheelEvent wheelEvent(
-                m_ptLastMouse,
-                m_window.mapToGlobal( m_ptLastMouse ),
-                QPoint(),
-                QPoint( static_cast<int>( vrEvent.data.scroll.xdelta
-                                          * ( 360.0f * 8.0f ) ),
-                        static_cast<int>( vrEvent.data.scroll.ydelta
-                                          * ( 360.0f * 8.0f ) ) ),
-                0,
-                Qt::Vertical,
-                m_lastMouseButtons,
-                nullptr );
+                m_ptLastMouse,                                 // 1. pos
+                m_window.mapToGlobal( m_ptLastMouse ),         // 2. globalPos
+                QPoint(),                                      // 3. pixelDelta
+                QPoint( static_cast<int>( vrEvent.data.scroll.xdelta * ( 360.0f * 8.0f ) ),
+                        static_cast<int>( vrEvent.data.scroll.ydelta * ( 360.0f * 8.0f ) ) ), // 4. angleDelta
+                m_lastMouseButtons,                            // 5. buttons (注意：这里不再是 0)
+                Qt::NoModifier,                                // 6. modifiers (原来是 nullptr)
+                Qt::NoScrollPhase,                             // 7. phase (新增)
+                false                                          // 8. inverted (新增)
+            );
             QCoreApplication::sendEvent( &m_window, &wheelEvent );
         }
         break;
