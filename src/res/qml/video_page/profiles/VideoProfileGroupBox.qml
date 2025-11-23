@@ -20,6 +20,9 @@ GroupBox {
         id:videoMessageDialog
     }
     topPadding: (videoProfileGroupBox.label ? videoProfileGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         leftPadding: 10

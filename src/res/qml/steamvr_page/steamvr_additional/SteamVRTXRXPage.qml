@@ -88,6 +88,9 @@ MyStackViewPage {
                                 id: chaperoneTypeGroupBox
                                 Layout.fillWidth: true
                                 topPadding: (chaperoneTypeGroupBox.label.implicitHeight) + 10
+                                leftPadding: 15
+                                rightPadding: 15
+                                bottomPadding: 10
 
                                 label: RowLayout{
                                     MyText {

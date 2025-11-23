@@ -8,6 +8,9 @@ GroupBox {
     id: spaceDragGroupBox
     Layout.fillWidth: true
     topPadding: (spaceDragGroupBox.label ? spaceDragGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         leftPadding: 10

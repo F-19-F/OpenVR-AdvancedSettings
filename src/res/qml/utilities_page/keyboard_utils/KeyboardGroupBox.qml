@@ -8,6 +8,9 @@ GroupBox {
     id: keyboardGroupBox
     Layout.fillWidth: true
     topPadding: (keyboardGroupBox.label ? keyboardGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         leftPadding: 10

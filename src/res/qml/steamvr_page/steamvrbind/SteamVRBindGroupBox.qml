@@ -8,6 +8,9 @@ GroupBox {
     id: steamVRBindGroupBox
     Layout.fillWidth: true
     topPadding: (steamVRBindGroupBox.label ? steamVRBindGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label:
         MyText {
@@ -79,7 +82,7 @@ GroupBox {
                 id: bindingsButton
                 activationSoundEnabled: false
                 text: "Open Bindings"
-                Layout.preferredWidth: 180
+                Layout.preferredWidth: 190
                 onClicked: {
                      SteamVRTabController.launchBindingUI()
                 }

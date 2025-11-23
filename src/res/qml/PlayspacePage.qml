@@ -160,6 +160,9 @@ MyStackViewPage {
             id: offsetsGroupBox
             visible: true
             topPadding: (offsetsGroupBox.label ? offsetsGroupBox.label.implicitHeight : 0) + 10
+            leftPadding: 15
+            rightPadding: 15
+            bottomPadding: 10
 
             label: MyText {
                 leftPadding: 10
@@ -358,6 +361,10 @@ MyStackViewPage {
             visible: true
 
             topPadding: (rotationGroupBox.label ? rotationGroupBox.label.implicitHeight : 0) + 10
+            leftPadding: 15
+            rightPadding: 15
+            bottomPadding: 10
+
             label: MyText {
                 leftPadding: 10
                 text: "Rotate Space"

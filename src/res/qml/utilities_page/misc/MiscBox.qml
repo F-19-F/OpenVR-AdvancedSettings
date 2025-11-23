@@ -8,6 +8,9 @@ GroupBox {
     id: utilMiscGroupBox
     Layout.fillWidth: true
     topPadding: (utilMiscGroupBox.label ? utilMiscGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label:
         MyText {

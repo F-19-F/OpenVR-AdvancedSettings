@@ -8,6 +8,9 @@ GroupBox {
     id: spaceTurnGroupBox
     Layout.fillWidth: true
     topPadding: (spaceTurnGroupBox.label ? spaceTurnGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         leftPadding: 10

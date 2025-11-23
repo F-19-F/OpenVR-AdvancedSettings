@@ -8,6 +8,9 @@ GroupBox {
     id: brightnessGroupBox
     Layout.fillWidth: true
     topPadding: (brightnessGroupBox.label ? brightnessGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         leftPadding: 10

@@ -8,6 +8,9 @@ GroupBox {
     id: overlayMethodGroupBox
     Layout.fillWidth: true
     topPadding: (overlayMethodGroupBox.label ? overlayMethodGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         leftPadding: 10

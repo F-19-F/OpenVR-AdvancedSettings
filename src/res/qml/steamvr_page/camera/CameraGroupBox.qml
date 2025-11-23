@@ -8,6 +8,10 @@ GroupBox {
     id: cameraGroupBox
     Layout.fillWidth: true
     topPadding: (cameraGroupBox.label ? cameraGroupBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
+
     label: MyText {
         leftPadding: 10
         text: "Camera: (requires SteamVR restart)"

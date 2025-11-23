@@ -27,6 +27,9 @@ GroupBox {
     id: sliderBox
     Layout.fillWidth: true
     topPadding: (sliderBox.label ? sliderBox.label.implicitHeight : 0) + 10
+    leftPadding: 15
+    rightPadding: 15
+    bottomPadding: 10
 
     label: MyText {
         id: headerText
