@@ -17,6 +17,138 @@
 #include <chrono>
 #include <windows.h> // 必须包含
 #include "ChaperoneTabController.h"
+#include "DiscoveryProtocol.h"
+
+
+
+
+class DiscoveryBroadcaster {
+public:
+    // tcpPort: 告诉 Android 连接此 TCP 端口
+    // udpPort: UDP 广播的目标端口 (Android 监听端口)
+    DiscoveryBroadcaster(int tcpPort, int udpPort);
+    ~DiscoveryBroadcaster();
+
+    bool start();
+    void stop();
+
+    // 设置单播目标 IP。传入 "" (空字符串) 则只发广播。
+    void setTargetIP(const std::string& ip);
+
+private:
+    void workerLoop();
+
+    int m_tcpPort;
+    int m_udpPort;
+    
+    std::atomic<bool> m_isRunning;
+    std::thread m_workerThread;
+    SOCKET m_socket;
+
+    std::mutex m_ipMutex;
+    std::string m_targetIP;
+};
+DiscoveryBroadcaster::DiscoveryBroadcaster(int tcpPort, int udpPort)
+    : m_tcpPort(tcpPort), m_udpPort(udpPort), m_isRunning(false), m_socket(INVALID_SOCKET) {
+}
+
+DiscoveryBroadcaster::~DiscoveryBroadcaster() {
+    stop();
+}
+
+bool DiscoveryBroadcaster::start() {
+    if (m_isRunning) return true;
+
+    // 创建 UDP Socket
+    m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (m_socket == INVALID_SOCKET) {
+        std::cerr << "[PC] Create socket failed: " << WSAGetLastError() << std::endl;
+        return false;
+    }
+
+    // 启用广播
+    BOOL broadcast = TRUE;
+    if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, (char*)&broadcast, sizeof(broadcast)) < 0) {
+        std::cerr << "[PC] Setsockopt broadcast failed." << std::endl;
+        closesocket(m_socket);
+        return false;
+    }
+
+    m_isRunning = true;
+    m_workerThread = std::thread(&DiscoveryBroadcaster::workerLoop, this);
+    std::cout << "[PC] Discovery Service Started." << std::endl;
+    return true;
+}
+
+void DiscoveryBroadcaster::stop() {
+    if (!m_isRunning) return;
+    m_isRunning = false;
+
+    if (m_socket != INVALID_SOCKET) {
+        closesocket(m_socket);
+        m_socket = INVALID_SOCKET;
+    }
+
+    if (m_workerThread.joinable()) {
+        m_workerThread.join();
+    }
+    std::cout << "[PC] Discovery Service Stopped." << std::endl;
+}
+
+void DiscoveryBroadcaster::setTargetIP(const std::string& ip) {
+    std::lock_guard<std::mutex> lock(m_ipMutex);
+    m_targetIP = ip;
+    if (!ip.empty()) {
+        std::cout << "[PC] Added Unicast Target: " << ip << std::endl;
+    } else {
+        std::cout << "[PC] Unicast Target Cleared (Broadcast Only)." << std::endl;
+    }
+}
+
+void DiscoveryBroadcaster::workerLoop() {
+    // 准备数据包
+    DiscoveryPacket packet;
+    // 使用 htonl/htons 转为网络字节序 (Big Endian)
+    packet.magic = htonl(DISCOVERY_MAGIC);
+    packet.version = htons(DISCOVERY_VERSION);
+    packet.tcpPort = htons((uint16_t)m_tcpPort);
+    // 计算校验和 (注意：对已经转为网络序的数据进行计算)
+    packet.checksum = htonl(calculateChecksum(packet));
+
+    // 广播地址
+    sockaddr_in broadcastAddr;
+    broadcastAddr.sin_family = AF_INET;
+    broadcastAddr.sin_port = htons(m_udpPort);
+    broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;
+
+    while (m_isRunning) {
+        // 1. 发送广播
+        sendto(m_socket, (const char*)&packet, sizeof(packet), 0, 
+               (sockaddr*)&broadcastAddr, sizeof(broadcastAddr));
+
+        // 2. 发送单播 (如果设置了 IP)
+        std::string currentIP;
+        {
+            std::lock_guard<std::mutex> lock(m_ipMutex);
+            currentIP = m_targetIP;
+        }
+
+        if (!currentIP.empty()) {
+            sockaddr_in unicastAddr;
+            unicastAddr.sin_family = AF_INET;
+            unicastAddr.sin_port = htons(m_udpPort);
+            // 将字符串 IP 转为地址结构
+            if (inet_pton(AF_INET, currentIP.c_str(), &unicastAddr.sin_addr) == 1) {
+                sendto(m_socket, (const char*)&packet, sizeof(packet), 0, 
+                       (sockaddr*)&unicastAddr, sizeof(unicastAddr));
+            }
+        }
+
+        // 间隔 1 秒
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
+
 // ==========================================
 // 1. 数据结构定义 (与 Android 端对齐)
 // ==========================================
@@ -80,7 +212,7 @@ public:
 
         if (bind(listenSock, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) return false;
         if (listen(listenSock, 1) == SOCKET_ERROR) return false;
-
+        m_discoveryBroadcaster.start();
         std::cout << ">>> Waiting for Quest Connection on Port 1191..." << std::endl;
         return true;
     }
@@ -114,6 +246,7 @@ public:
             closesocket(listenSock);
             listenSock = INVALID_SOCKET;
         }
+        m_discoveryBroadcaster.stop();
     }
 
     bool PollEvent(vr::VREvent_t *event,uint32_t size) {
@@ -124,6 +257,7 @@ private:
     vr::IVRSystem* m_pHMD = nullptr;
     vr::IVRChaperoneSetup* m_pSetup = nullptr;
     advsettings::MoveCenterTabController* m_moveCenterTabController = nullptr;
+    DiscoveryBroadcaster m_discoveryBroadcaster{ 1191, DISCOVERY_PORT };
     SOCKET listenSock = INVALID_SOCKET;
     SOCKET clientSock = INVALID_SOCKET;
     void ProcessData(const SteamVRChaperoneData& data, Vector3& lastCenter, bool& hasSyncedOnce) {
