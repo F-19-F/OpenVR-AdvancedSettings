@@ -18,7 +18,7 @@
 #include <windows.h> // 必须包含
 #include "ChaperoneTabController.h"
 #include "DiscoveryProtocol.h"
-
+#include <easylogging++.h>
 
 
 
@@ -261,6 +261,12 @@ private:
     SOCKET listenSock = INVALID_SOCKET;
     SOCKET clientSock = INVALID_SOCKET;
     void ProcessData(const SteamVRChaperoneData& data, Vector3& lastCenter, bool& hasSyncedOnce) {
+        if(data.playAreaX <= 0 || data.playAreaZ <= 0) {
+            LOG(INFO) << "[ChaperoneSync] updateChaperoneResetData";
+            vr::VRChaperoneSetup()->RevertWorkingCopy();
+            m_moveCenterTabController->updateChaperoneResetData(false);
+            return;
+        }
         // 1. 获取 SteamVR 头显位姿
         vr::TrackedDevicePose_t trackedPose[vr::k_unMaxTrackedDeviceCount];
         m_pHMD->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseStanding, 0, trackedPose, vr::k_unMaxTrackedDeviceCount);

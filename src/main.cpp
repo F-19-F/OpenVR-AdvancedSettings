@@ -13,7 +13,8 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char* argv[] )
 {
     setUpLogging();
-
+    qputenv("QT_QUICK_CONTROLS_IGNORE_CUSTOMIZATION_WARNINGS", "1");
+    QLoggingCategory::setFilterRules("qt.qml.connections=false");
     LOG( INFO ) << "Settings File: "
                 << settings::initializeAndGetSettingsPath();
 
