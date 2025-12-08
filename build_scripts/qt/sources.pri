@@ -2,6 +2,7 @@ SOURCES += src/main.cpp\
     src/overlaycontroller.cpp \
     src/tabcontrollers/AudioTabController.cpp \
     src/tabcontrollers/ChaperoneTabController.cpp \
+    src/tabcontrollers/BoundrySync.cpp \
     src/tabcontrollers/FixFloorTabController.cpp \
     src/tabcontrollers/MoveCenterTabController.cpp \
     src/tabcontrollers/SettingsTabController.cpp \

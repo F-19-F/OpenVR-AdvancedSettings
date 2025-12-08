@@ -9,7 +9,7 @@ extern "C" __declspec( dllexport ) DWORD AmdPowerXpressRequestHighPerformance
 #endif
 
 INITIALIZE_EASYLOGGINGPP
-
+void BoundrySyncStop();
 int main( int argc, char* argv[] )
 {
     setUpLogging();
@@ -128,7 +128,11 @@ int main( int argc, char* argv[] )
             ovr_settings_wrapper::resetAllSettings();
         }
 
-        return mainEventLoop.exec();
+        int ret = mainEventLoop.exec();
+
+        BoundrySyncStop();
+
+        return ret;
     }
     catch ( const std::exception& e )
     {

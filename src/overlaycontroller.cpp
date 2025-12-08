@@ -375,10 +375,11 @@ void OverlayController::exitApp()
     m_chaperoneTabController.shutdown();
 
     Shutdown();
+    qInstallMessageHandler(nullptr);
     QApplication::exit();
 
-    LOG( INFO ) << "All systems exited.";
-    exit( EXIT_SUCCESS );
+    // LOG( INFO ) << "All systems exited.";
+    // exit( EXIT_SUCCESS );
     // Does not fallthrough
 }
 
@@ -1220,7 +1221,7 @@ void OverlayController::mainEventLoop()
             exitApp();
             // Won't fallthrough, but also exitApp() wont, but QT won't
             // acknowledge
-            exit( EXIT_SUCCESS );
+            // exit( EXIT_SUCCESS );
         }
 
         case vr::VREvent_DashboardActivated:
